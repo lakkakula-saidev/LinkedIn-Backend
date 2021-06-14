@@ -1,4 +1,0 @@
-PORT=666
-FRONTEND_DEV_URL=http://localhost:3000
-FRONTEND_PROD_URL=https://bw3-linkedin-clone.vercel.app
-MONGO_CONNECTION=mongodb+srv://dbTest:hsao0oANAysU4is1@cluster0.pckw0.mongodb.net/BW3?retryWrites=true&w=majority
