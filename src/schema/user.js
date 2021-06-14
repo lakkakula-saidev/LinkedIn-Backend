@@ -24,7 +24,7 @@ const userSchema = new Schema(
         email: { type: String, required: true },
         bio: { type: String, required: true },
         area: { type: String, required: true },
-        description: { type: String, required: true },
+        title: { type: String, required: true },
         image: { type: String, default: "https://via.placeholder.com/420?text=User%20User" },
         username: { type: String, required: true },
         posts: [{ type: Schema.Types.ObjectId, ref: "Post", required: true }],

@@ -3,7 +3,7 @@ import mongoose from "mongoose"
 import cors from "cors"
 import services from "./services/index.js"
 import listEndpoints from "express-list-endpoints"
-
+import createError from "http-errors"
 
 const server = express()
 const port = process.env.PORT || 1234
@@ -29,10 +29,11 @@ server.use(express.json())
 
 server.use("/api", services)
 
-const handleError = (err, req, res) => {
+const error = (err, _req, res, _next) => {
     res.status(err.status).send(err.message)
 }
-server.use(handleError)
+
+server.use(error)
 
 mongoose.connect(process.env.MONGO_CONNECTION, { useNewUrlParser: true, useUnifiedTopology: true }).then(() => {
     server.listen(port, () => {

@@ -22,9 +22,9 @@ const postSchema = new Schema(
         user: { type: Schema.Types.ObjectId, ref: "User", required: true },
         image: { type: String, default: null },
         comments: { type: [commentSchema], default: [] },
-        likes: { type: [likeSchema], default: [] }
+        likes: [{ type: Schema.Types.ObjectId, ref: "User", required: true }]
     },
     { timestamps: true }
 )
 
-export default model("Blog", postSchema)
+export default model("Post", postSchema)
