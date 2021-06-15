@@ -14,6 +14,8 @@ const generatePDFStream = async data => {
         imagePart = { image: base64Image, width: 100, height: 100, margin: [15, 25, 15, 0] }
     }
 
+
+
     const fonts = {
         Roboto: {
             normal: "Helvetica",
@@ -37,7 +39,19 @@ const generatePDFStream = async data => {
                 imagePart
             ],
             style: 'header'
-        }],
+        },
+        {
+            style: 'tableExample',
+            table: {
+                widths: ['auto', 'auto'],
+                body: [
+                    [{ text: `         `, noWrap: true, style: 'sectionLine', width: 50 }, { text: 'Experience', style: 'sectionHeading', }],
+                    ...data.experiences.map(item => ([{ text: `${new Date(item.startDate).toLocaleDateString('default', { month: 'short', year: '2-digit' })}-${new Date(item.startDate).toLocaleDateString('default', { month: 'short', year: '2-digit' })}`, noWrap: true },
+                    { text: [{ text: `${item.role}`, bold: true }, { text: `\n${item.company}, `, italics: true, fontSize: 14 }, { text: `${item.area}\n`, fontSize: 14 }, { text: `${item.description}\n`, margin: [0, 0, 0, 5] }] }])),
+                ]
+            }, layout: 'noBorders'
+        }
+        ],
 
 
         styles: {
@@ -53,6 +67,25 @@ const generatePDFStream = async data => {
                 fontSize: 15,
                 alignment: 'right',
                 margin: [0, 40, 0, 0]
+            },
+            header: {
+                margin: [0, 0, 0, 40]
+            },
+            tableExample: {
+                lineHeight: 1.15,
+                fontSize: 15,
+                margin: [0, 5, 0, 15]
+            },
+            sectionLine: {
+                fontSize: 25,
+                decoration: 'underline',
+                decorationColor: '#3873B2',
+                margin: [60, 0, 0, 0]
+            },
+            sectionHeading: {
+                color: '#3873B2',
+                fontSize: 20,
+                bold: true
             }
         }
 
