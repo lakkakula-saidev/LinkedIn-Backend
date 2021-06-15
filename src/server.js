@@ -41,7 +41,7 @@ const logger = async (req, res, next) => {
 }
 /* server.use(logger) */
 
-/* server.use(cors(corsOptions)) */
+server.use(cors(corsOptions))
 server.use(express.json())
 
 
