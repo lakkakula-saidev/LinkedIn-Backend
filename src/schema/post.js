@@ -9,12 +9,6 @@ const commentSchema = new Schema({
     updatedAt: { type: Date, default: new Date() }
 })
 
-const likeSchema = new Schema({
-    user: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    createdAt: { type: Date, default: new Date() },
-    updatedAt: { type: Date, default: new Date() }
-})
-
 const postSchema = new Schema(
     {
         text: { type: String, required: true },

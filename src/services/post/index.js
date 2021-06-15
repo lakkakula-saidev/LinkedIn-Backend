@@ -1,6 +1,6 @@
-import express from 'express'
-import { postValidator } from '../../handlers/validators.js';
-import postModel from '../../schema/post.js'
+import express from "express"
+import { postValidator } from "../../handlers/validators.js"
+import postModel from "../../schema/post.js"
 import mongoose from "mongoose"
 const { isValidObjectId } = mongoose
 import q2m from "query-to-mongo"
@@ -12,7 +12,7 @@ import { CloudinaryStorage } from "multer-storage-cloudinary"
 const cloudinaryStorage = new CloudinaryStorage({ cloudinary, params: { folder: "bw3" } })
 const upload = multer({ storage: cloudinaryStorage }).single("image")
 
-const routes = express.Router();
+const routes = express.Router()
 
 // GET ALL POSTS
 routes.get("/", async (req, res, next) => {
