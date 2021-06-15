@@ -25,6 +25,7 @@ routes.get("/", async (req, res, next) => {
             .sort(query.options.sort)
             .skip(query.options.skip || 0)
             .limit(query.options.limit && query.options.limit < limit ? query.options.limit : limit)
+            .populate("user")
 
         res.status(200).send({ links: query.links("/posts", total), total, result })
     } catch (error) {
@@ -37,7 +38,7 @@ routes.get("/:id", async (req, res, next) => {
     try {
         let result
         if (!isValidObjectId(req.params.id)) next(createError(400, `ID: ${req.params.id} is invalid`))
-        else result = await postModel.findById(req.params.id)
+        else result = await postModel.findById(req.params.id).populate("user")
         res.send(result)
     } catch (error) {
         next(createError(500, error))
@@ -88,7 +89,12 @@ routes.post("/:id", upload, async (req, res, next) => {
     try {
         let result
         if (!isValidObjectId(req.params.id)) next(createError(400, `ID ${req.params.id} is invalid`))
-        else result = await postModel.findByIdAndUpdate(req.params.id, { $set: { image: req.file.path } }, { new: true, useFindAndModify: false })
+        else
+            result = await postModel.findByIdAndUpdate(
+                req.params.id,
+                { $set: { image: req.file.path } },
+                { timestamps: false, new: true, useFindAndModify: false }
+            )
 
         if (result) res.status(200).send(result)
         else next(createError(404, `ID ${req.params.id} was not found`))
@@ -148,7 +154,7 @@ routes.get("/:id/comment/", async (req, res, next) => {
     try {
         let post
         if (!isValidObjectId(req.params.id)) next(createError(400, `ID ${req.params.id} is invalid`))
-        else post = await postModel.findById(req.params.id, { comments: 1, _id: 0 })
+        else post = await postModel.findById(req.params.id, { comments: 1, _id: 0 }).populate("user")
 
         if (post) res.send(post.comments)
         else next(createError(404, `ID ${req.params.id} not found`))
@@ -163,7 +169,7 @@ routes.get("/:id/comment/:cid", async (req, res, next) => {
         let post
         if (!isValidObjectId(req.params.id)) next(createError(400, `ID ${req.params.id} is invalid`))
         else if (!isValidObjectId(req.params.cid)) next(createError(400, `ID ${req.params.cid} is invalid`))
-        else post = await postModel.findOne({ _id: req.params.id }, { comments: { $elemMatch: { _id: req.params.cid } } })
+        else post = await postModel.findOne({ _id: req.params.id }, { comments: { $elemMatch: { _id: req.params.cid } } }).populate("user")
 
         if (post) {
             if (post.comments && post.comments.length > 0) res.send(post.comments[0])
