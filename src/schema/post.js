@@ -12,6 +12,7 @@ const commentSchema = new Schema({
 const postSchema = new Schema(
     {
         text: { type: String, required: true },
+        title: { type: String, required: true },
         username: { type: String, required: true },
         user: { type: Schema.Types.ObjectId, ref: "User", required: true },
         image: { type: String, default: null },
