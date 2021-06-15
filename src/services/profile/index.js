@@ -1,22 +1,21 @@
-import express from 'express'
+import express from "express"
 import q2m from "query-to-mongo"
 import mongoose from "mongoose"
 const { isValidObjectId } = mongoose
 import createError from "http-errors"
-import { pipeline, Readable } from 'stream'
+import { pipeline, Readable } from "stream"
 import { Parser } from "json2csv"
 import multer from "multer"
 import { v2 as cloudinary } from "cloudinary"
 import { CloudinaryStorage } from "multer-storage-cloudinary"
-import { userValidator } from '../../handlers/validators.js';
-import userModel from '../../schema/user.js'
+import { userValidator } from "../../handlers/validators.js"
+import userModel from "../../schema/user.js"
 import generatePDFStream from "../../handlers/pdfout.js"
-
 
 const cloudinaryStorage = new CloudinaryStorage({ cloudinary, params: { folder: "bw3" } })
 const upload = multer({ storage: cloudinaryStorage }).single("image")
 
-const profileRouter = express.Router();
+const profileRouter = express.Router()
 
 // GET ALL
 profileRouter.get("/", async (req, res, next) => {
@@ -136,7 +135,6 @@ profileRouter.get("/:id/experiences", async (req, res, next) => {
     }
 })
 
-
 profileRouter.get("/:id/experiences/:expId", async (req, res, next) => {
     try {
         let result
@@ -172,7 +170,6 @@ profileRouter.post("/:id/experiences", async (req, res, next) => {
         next(createError(500, error))
     }
 })
-
 
 profileRouter.put("/:id/experiences/:expId", async (req, res, next) => {
     try {
@@ -217,11 +214,12 @@ profileRouter.post("/:id/experiences/:expId/picture", upload, async (req, res, n
         let result
         if (!isValidObjectId(req.params.id)) next(createError(400, `ID ${req.params.id} is invalid`))
         else if (!isValidObjectId(req.params.expId)) next(createError(400, `ID ${req.params.expId} is invalid`))
-        else result = await userModel.findOneAndUpdate(
-            { _id: req.params.id, "experiences._id": req.params.expId },
-            { $set: { "experiences.$": { image: req.file.path } } },
-            { timestamps: false, runValidators: false, new: true, useFindAndModify: false }
-        )
+        else
+            result = await userModel.findOneAndUpdate(
+                { _id: req.params.id, "experiences._id": req.params.expId },
+                { $set: { "experiences.$": { image: req.file.path } } },
+                { timestamps: false, runValidators: false, new: true, useFindAndModify: false }
+            )
         if (result) res.status(200).send(result)
         else next(createError(404, `ID ${req.params.id} was not found`))
     } catch (error) {
