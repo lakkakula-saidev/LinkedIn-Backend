@@ -204,7 +204,7 @@ routes.put("/:id/comment/:cid", async (req, res, next) => {
         if (!isValidObjectId(req.params.id)) next(createError(400, `ID ${req.params.id} is invalid`))
         else if (!isValidObjectId(req.params.cid)) next(createError(400, `ID ${req.params.cid} is invalid`))
         else
-            post = await postModal.findOneAndUpdate(
+            post = await postModel.findOneAndUpdate(
                 { _id: req.params.id, "comments._id": req.params.cid },
                 { $set: { "comments.$": { ...req.body, _id: req.params.cid, updatedAt: new Date() } } },
                 { timestamps: false, runValidators: true, new: true, useFindAndModify: false }
