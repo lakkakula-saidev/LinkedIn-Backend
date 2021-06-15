@@ -26,6 +26,7 @@ routes.get("/", async (req, res, next) => {
             .skip(query.options.skip || 0)
             .limit(query.options.limit && query.options.limit < limit ? query.options.limit : limit)
             .populate("user")
+            .populate("comments.user")
 
         res.status(200).send({ links: query.links("/posts", total), total, result })
     } catch (error) {
@@ -38,7 +39,7 @@ routes.get("/:id", async (req, res, next) => {
     try {
         let result
         if (!isValidObjectId(req.params.id)) next(createError(400, `ID: ${req.params.id} is invalid`))
-        else result = await postModel.findById(req.params.id).populate("user")
+        else result = await postModel.findById(req.params.id).populate("user").populate("comments.user")
         res.send(result)
     } catch (error) {
         next(createError(500, error))
@@ -154,7 +155,7 @@ routes.get("/:id/comment/", async (req, res, next) => {
     try {
         let post
         if (!isValidObjectId(req.params.id)) next(createError(400, `ID ${req.params.id} is invalid`))
-        else post = await postModel.findById(req.params.id, { comments: 1, _id: 0 }).populate("user")
+        else post = await postModel.findById(req.params.id, { comments: 1, _id: 0 })
 
         if (post) res.send(post.comments)
         else next(createError(404, `ID ${req.params.id} not found`))
@@ -169,7 +170,7 @@ routes.get("/:id/comment/:cid", async (req, res, next) => {
         let post
         if (!isValidObjectId(req.params.id)) next(createError(400, `ID ${req.params.id} is invalid`))
         else if (!isValidObjectId(req.params.cid)) next(createError(400, `ID ${req.params.cid} is invalid`))
-        else post = await postModel.findOne({ _id: req.params.id }, { comments: { $elemMatch: { _id: req.params.cid } } }).populate("user")
+        else post = await postModel.findOne({ _id: req.params.id }, { comments: { $elemMatch: { _id: req.params.cid } } })
 
         if (post) {
             if (post.comments && post.comments.length > 0) res.send(post.comments[0])
