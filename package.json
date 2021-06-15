@@ -5,6 +5,7 @@
     "main": "index.js",
     "type": "module",
     "dependencies": {
+        "axios": "^0.21.1",
         "cloudinary": "^1.26.0",
         "cors": "^2.8.5",
         "express": "^4.17.1",
