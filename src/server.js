@@ -4,6 +4,7 @@ import cors from "cors"
 import services from "./services/index.js"
 import listEndpoints from "express-list-endpoints"
 import createError from "http-errors"
+import logModel from "./schema/log.js"
 
 const server = express()
 const port = process.env.PORT || 1234
@@ -22,6 +23,23 @@ const corsOptions = {
         }
     }
 }
+
+const logger = async (req, res, next) => {
+    try {
+        const entry = new logModel({
+            method: req.method,
+            query: req.query,
+            params: req.params,
+            body: req.body
+        })
+
+        await entry.save()
+        next()
+    } catch (error) {
+        next(error)
+    }
+}
+/* server.use(logger) */
 
 server.use(cors(corsOptions))
 server.use(express.json())
