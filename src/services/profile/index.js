@@ -21,10 +21,14 @@ const profileRouter = express.Router()
 profileRouter.get("/", async (req, res, next) => {
     try {
         const query = q2m(req.query)
+        let keys = Object.keys(query.criteria)
+        let values = Object.values(query.criteria)
+        const customQuery = { $or: [{ "surname": { "$regex": `${query.criteria.name}`, "$options": "i" } }, { "name": { "$regex": `${query.criteria.name}`, "$options": "i" } }] }
         const total = await userModel.countDocuments(query.criteria)
         const limit = 25
         const result = await userModel
-            .find(query.criteria)
+            .find((keys.length === 1 && keys[0] === 'name') && (values.length === 1 && values[0].length >= 3) ? customQuery : query.criteria)
+            /*  .collation({ locale: 'en', strength: 2 }) */
             .sort(query.options.sort)
             .skip(query.options.skip || 0)
             .limit(query.options.limit && query.options.limit < limit ? query.options.limit : limit)
