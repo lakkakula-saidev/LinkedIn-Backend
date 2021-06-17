@@ -13,7 +13,7 @@ const whitelist = [process.env.FRONTEND_DEV_URL, process.env.FRONTEND_PROD_URL]
 const corsOptions = {
     origin: (origin, next) => {
         try {
-            if (whitelist.indexOf(origin) !== -1) {
+            if (!origin || whitelist.indexOf(origin) !== -1) {
                 next(null, true)
             } else {
                 next(createError(400, "Cross-Site Origin Policy blocked your request"), true)
