@@ -221,7 +221,7 @@ profileRouter.post("/:id/experiences/:expId/picture", upload, async (req, res, n
         else
             result = await userModel.findOneAndUpdate(
                 { _id: req.params.id, "experiences._id": req.params.expId },
-                { $set: { "experiences.$": { image: req.file.path } } },
+                { $set: { "experiences.$.image": req.file.path } },
                 { timestamps: false, runValidators: false, new: true, useFindAndModify: false }
             )
         if (result) res.status(200).send(result)
