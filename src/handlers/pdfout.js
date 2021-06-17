@@ -1,5 +1,4 @@
 import PdfPrinter from "pdfmake"
-import userModel from "../schema/user.js"
 import axios from "axios"
 import { extname } from "path"
 
