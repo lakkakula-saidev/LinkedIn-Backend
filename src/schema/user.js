@@ -2,20 +2,18 @@ import mongoose from "mongoose"
 
 const { Schema, model } = mongoose
 
-const experienceSchema = new Schema(
-    {
-        role: { type: String, required: true },
-        company: { type: String, required: true },
-        startDate: { type: Date, required: true },
-        endDate: { type: Date, default: null },
-        description: { type: String, required: true },
-        area: { type: String, required: true },
-        username: { type: String, required: true },
-        createdAt: { type: Date, default: new Date() },
-        updatedAt: { type: Date, default: new Date() },
-        image: { type: String, default: "https://via.placeholder.com/420?text=User%Experience" }
-    }
-)
+const experienceSchema = new Schema({
+    role: { type: String, required: true },
+    company: { type: String, required: true },
+    startDate: { type: Date, required: true },
+    endDate: { type: Date, default: null },
+    description: { type: String, required: true },
+    area: { type: String, required: true },
+    username: { type: String, required: true },
+    createdAt: { type: Date, default: new Date() },
+    updatedAt: { type: Date, default: new Date() },
+    image: { type: String, default: "https://via.placeholder.com/420?text=User%Experience" }
+})
 
 const userSchema = new Schema(
     {

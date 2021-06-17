@@ -1,6 +1,6 @@
-import express from 'express'
-import { postValidator } from '../../handlers/validators.js';
-import postModel from '../../schema/post.js'
+import express from "express"
+import { postValidator } from "../../handlers/validators.js"
+import postModel from "../../schema/post.js"
 import mongoose from "mongoose"
 const { isValidObjectId } = mongoose
 import q2m from "query-to-mongo"
@@ -12,7 +12,7 @@ import { CloudinaryStorage } from "multer-storage-cloudinary"
 const cloudinaryStorage = new CloudinaryStorage({ cloudinary, params: { folder: "bw3" } })
 const upload = multer({ storage: cloudinaryStorage }).single("image")
 
-const routes = express.Router();
+const routes = express.Router()
 
 // GET ALL POSTS
 routes.get("/", async (req, res, next) => {
@@ -25,6 +25,8 @@ routes.get("/", async (req, res, next) => {
             .sort(query.options.sort)
             .skip(query.options.skip || 0)
             .limit(query.options.limit && query.options.limit < limit ? query.options.limit : limit)
+            .populate("user")
+            .populate("comments.user")
 
         res.status(200).send({ links: query.links("/posts", total), total, result })
     } catch (error) {
@@ -37,7 +39,7 @@ routes.get("/:id", async (req, res, next) => {
     try {
         let result
         if (!isValidObjectId(req.params.id)) next(createError(400, `ID: ${req.params.id} is invalid`))
-        else result = await postModel.findById(req.params.id)
+        else result = await postModel.findById(req.params.id).populate("user").populate("comments.user")
         res.send(result)
     } catch (error) {
         next(createError(500, error))
@@ -88,7 +90,12 @@ routes.post("/:id", upload, async (req, res, next) => {
     try {
         let result
         if (!isValidObjectId(req.params.id)) next(createError(400, `ID ${req.params.id} is invalid`))
-        else result = await postModel.findByIdAndUpdate(req.params.id, { $set: { image: req.file.path } }, { new: true, useFindAndModify: false })
+        else
+            result = await postModel.findByIdAndUpdate(
+                req.params.id,
+                { $set: { image: req.file.path } },
+                { timestamps: false, new: true, useFindAndModify: false }
+            )
 
         if (result) res.status(200).send(result)
         else next(createError(404, `ID ${req.params.id} was not found`))
@@ -204,7 +211,7 @@ routes.put("/:id/comment/:cid", async (req, res, next) => {
         if (!isValidObjectId(req.params.id)) next(createError(400, `ID ${req.params.id} is invalid`))
         else if (!isValidObjectId(req.params.cid)) next(createError(400, `ID ${req.params.cid} is invalid`))
         else
-            post = await blogModel.findOneAndUpdate(
+            post = await postModel.findOneAndUpdate(
                 { _id: req.params.id, "comments._id": req.params.cid },
                 { $set: { "comments.$": { ...req.body, _id: req.params.cid, updatedAt: new Date() } } },
                 { timestamps: false, runValidators: true, new: true, useFindAndModify: false }

@@ -20,9 +20,9 @@ export const experienceValidator = [
 ]
 
 export const postValidator = [
-    body("text").exists().isString().isLength({ min: 16, max: 8192 }).withMessage("Error is field text"),
+    body("text").exists().isString().isLength({ min: 16, max: 8192 }).withMessage("Error in field text"),
 ]
 
 export const commentValidator = [
-    body("comment").exists().isString().isLength({ min: 2, max: 4096 }).withMessage("Error is field comment"),
+    body("comment").exists().isString().isLength({ min: 2, max: 4096 }).withMessage("Error in field comment"),
 ]
