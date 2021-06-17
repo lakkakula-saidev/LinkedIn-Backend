@@ -23,11 +23,13 @@ profileRouter.get("/", async (req, res, next) => {
         const query = q2m(req.query)
         let keys = Object.keys(query.criteria)
         let values = Object.values(query.criteria)
-        const customQuery = { $or: [{ "surname": { "$regex": `${query.criteria.name}`, "$options": "i" } }, { "name": { "$regex": `${query.criteria.name}`, "$options": "i" } }] }
+        const customQuery = {
+            $or: [{ surname: { $regex: `${query.criteria.name}`, $options: "i" } }, { name: { $regex: `${query.criteria.name}`, $options: "i" } }]
+        }
         const total = await userModel.countDocuments(query.criteria)
         const limit = 25
         const result = await userModel
-            .find((keys.length === 1 && keys[0] === 'name') && (values.length === 1 && values[0].length >= 3) ? customQuery : query.criteria)
+            .find(keys.length === 1 && keys[0] === "name" && values.length === 1 && values[0].length >= 3 ? customQuery : query.criteria)
             /*  .collation({ locale: 'en', strength: 2 }) */
             .sort(query.options.sort)
             .skip(query.options.skip || 0)
@@ -113,7 +115,7 @@ profileRouter.get("/:id/experiences/CSV", async (req, res, next) => {
         if (!isValidObjectId(req.params.id)) next(createError(400, `ID ${req.params.id} is invalid`))
         else {
             const user = await userModel.findById(req.params.id)
-            const fields = ["_id", "role", "company", "startData", "endDate", "description", "area"]
+            const fields = ["_id", "role", "company", "startDate", "endDate", "description", "area"]
             const parser = new Parser({ fields })
             const csv = parser.parse(user.experiences)
             const stream = Readable.from(csv)
