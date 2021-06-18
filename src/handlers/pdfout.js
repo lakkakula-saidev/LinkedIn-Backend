@@ -14,13 +14,12 @@ const generatePDFStream = async data => {
 
     const fonts = {
         Roboto: {
-            normal: 'Times-Roman',
-            bold: 'Times-Bold',
-            italics: 'Times-Italic',
-            bolditalics: 'Times-BoldItalic'
-        },
+            normal: "Times-Roman",
+            bold: "Times-Bold",
+            italics: "Times-Italic",
+            bolditalics: "Times-BoldItalic"
+        }
     }
-
 
     const printer = new PdfPrinter(fonts)
 
@@ -45,15 +44,16 @@ const generatePDFStream = async data => {
                     body: [
                         [
                             {
-                                canvas: [{
-                                    type: 'line',
-                                    x1: 0, y1: 6,
-                                    x2: 85, y2: 6,
-                                    lineWidth: 5,
-                                    lineColor: '#3873B2'
-
-
-                                }
+                                canvas: [
+                                    {
+                                        type: "line",
+                                        x1: 0,
+                                        y1: 6,
+                                        x2: 85,
+                                        y2: 6,
+                                        lineWidth: 5,
+                                        lineColor: "#3873B2"
+                                    }
                                 ]
                             },
                             { text: "Experience", style: "sectionHeading" }
@@ -61,24 +61,25 @@ const generatePDFStream = async data => {
                         ...data.experiences.map(item => [
                             {
                                 text: `${new Date(item.startDate).toLocaleDateString("default", { month: "short", year: "2-digit" })}-${new Date(
-                                    item.startDate
+                                    item.endDate
                                 ).toLocaleDateString("default", { month: "short", year: "2-digit" })}`,
-                                noWrap: true, margin: [0, 2.5, 0, 0]
+                                noWrap: true,
+                                margin: [0, 2.5, 0, 0]
                             },
                             {
                                 text: [
                                     { text: `${item.role}`, bold: true },
-                                    { text: `\n${item.company}, `, italics: true, style: 'sectionBody' },
-                                    { text: `${item.area}\n`, style: 'sectionBody' },
-                                    { text: `${item.description}`, style: 'sectionBody' },
-
-                                ], margin: [7.5, 2.5, 0, 5]
+                                    { text: `\n${item.company}, `, italics: true, style: "sectionBody" },
+                                    { text: `${item.area}\n`, style: "sectionBody" },
+                                    { text: `${item.description}`, style: "sectionBody" }
+                                ],
+                                margin: [7.5, 2.5, 0, 5]
                             }
                         ])
                     ]
                 },
                 layout: "noBorders"
-            },
+            }
         ],
 
         styles: {
@@ -106,7 +107,6 @@ const generatePDFStream = async data => {
             sectionBody: {
                 fontSize: 15,
                 lineHeight: 1.35
-
             },
             sectionHeading: {
                 color: "#3873B2",
