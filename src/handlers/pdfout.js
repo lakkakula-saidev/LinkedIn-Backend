@@ -60,9 +60,9 @@ const generatePDFStream = async data => {
                         ],
                         ...data.experiences.map(item => [
                             {
-                                text: `${new Date(item.startDate).toLocaleDateString("default", { month: "short", year: "2-digit" })}-${new Date(
-                                    item.endDate
-                                ).toLocaleDateString("default", { month: "short", year: "2-digit" })}`,
+                                text: `${new Date(item.startDate).toLocaleDateString("default", { month: "short", year: "2-digit" })} - ${
+                                    item.endDate ? new Date(item.endDate).toLocaleDateString("default", { month: "short", year: "2-digit" }) : "Current"
+                                }`,
                                 noWrap: true,
                                 margin: [0, 2.5, 0, 0]
                             },
