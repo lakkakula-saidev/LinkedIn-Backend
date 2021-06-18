@@ -1,5 +1,4 @@
 import PdfPrinter from "pdfmake"
-import userModel from "../schema/user.js"
 import axios from "axios"
 import { extname } from "path"
 
@@ -10,23 +9,23 @@ const generatePDFStream = async data => {
         const mime = extname(data.image)
         const base64 = image.data.toString("base64")
         const base64Image = `data:image/${mime};base64,${base64}`
-        imagePart = { image: base64Image, width: 100, height: 100, margin: [15, 25, 15, 0] }
+        imagePart = { image: base64Image, width: 100, height: 100, margin: [0, 25, 0, 0] }
     }
 
     const fonts = {
         Roboto: {
-            normal: "Helvetica",
-            bold: "Helvetica-Bold",
-            italics: "Helvetica-Oblique",
-            bolditalics: "Helvetica-BoldOblique"
-        }
+            normal: 'Times-Roman',
+            bold: 'Times-Bold',
+            italics: 'Times-Italic',
+            bolditalics: 'Times-BoldItalic'
+        },
     }
-    /*   text: `${data.name} ${data.surname}`, style: 'bio', fontSize: 20, },
-      { text: `${data.title} \n ${data.email}`, lineHeight: 1.25, bold: false, fontSize: 15, margin: [0, 0, 0, 0]
-   */
+
+
     const printer = new PdfPrinter(fonts)
 
     const docDefinition = {
+        pageMargins: [50, 0, 30, 0],
         content: [
             {
                 columns: [
@@ -45,7 +44,18 @@ const generatePDFStream = async data => {
                     widths: ["auto", "auto"],
                     body: [
                         [
-                            { text: `         `, noWrap: true, style: "sectionLine", width: 50 },
+                            {
+                                canvas: [{
+                                    type: 'line',
+                                    x1: 0, y1: 6,
+                                    x2: 85, y2: 6,
+                                    lineWidth: 5,
+                                    lineColor: '#3873B2'
+
+
+                                }
+                                ]
+                            },
                             { text: "Experience", style: "sectionHeading" }
                         ],
                         ...data.experiences.map(item => [
@@ -53,21 +63,22 @@ const generatePDFStream = async data => {
                                 text: `${new Date(item.startDate).toLocaleDateString("default", { month: "short", year: "2-digit" })}-${new Date(
                                     item.startDate
                                 ).toLocaleDateString("default", { month: "short", year: "2-digit" })}`,
-                                noWrap: true
+                                noWrap: true, margin: [0, 2.5, 0, 0]
                             },
                             {
                                 text: [
                                     { text: `${item.role}`, bold: true },
-                                    { text: `\n${item.company}, `, italics: true, fontSize: 14 },
-                                    { text: `${item.area}\n`, fontSize: 14 },
-                                    { text: `${item.description}\n`, margin: [0, 0, 0, 5] }
-                                ]
+                                    { text: `\n${item.company}, `, italics: true, style: 'sectionBody' },
+                                    { text: `${item.area}\n`, style: 'sectionBody' },
+                                    { text: `${item.description}`, style: 'sectionBody' },
+
+                                ], margin: [7.5, 2.5, 0, 5]
                             }
                         ])
                     ]
                 },
                 layout: "noBorders"
-            }
+            },
         ],
 
         styles: {
@@ -82,7 +93,7 @@ const generatePDFStream = async data => {
                 lineHeight: 1.25,
                 fontSize: 15,
                 alignment: "right",
-                margin: [0, 40, 0, 0]
+                margin: [0, 40, 15, 0]
             },
             header: {
                 margin: [0, 0, 0, 40]
@@ -92,16 +103,16 @@ const generatePDFStream = async data => {
                 fontSize: 15,
                 margin: [0, 5, 0, 15]
             },
-            sectionLine: {
-                fontSize: 25,
-                decoration: "underline",
-                decorationColor: "#3873B2",
-                margin: [60, 0, 0, 0]
+            sectionBody: {
+                fontSize: 15,
+                lineHeight: 1.35
+
             },
             sectionHeading: {
                 color: "#3873B2",
                 fontSize: 20,
-                bold: true
+                bold: true,
+                margin: [5, 0, 0, 0]
             }
         }
     }
