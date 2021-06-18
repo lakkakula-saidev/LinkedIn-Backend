@@ -45,16 +45,15 @@ const generatePDFStream = async data => {
                     body: [
                         [
                             {
-                                canvas: [
-                                    {
-                                        type: 'line',
-                                        x1: 0, y1: 6,
-                                        x2: 85, y2: 6,
-                                        lineWidth: 5,
-                                        lineColor: '#3873B2'
+                                canvas: [{
+                                    type: 'line',
+                                    x1: 0, y1: 6,
+                                    x2: 85, y2: 6,
+                                    lineWidth: 5,
+                                    lineColor: '#3873B2'
 
 
-                                    }
+                                }
                                 ]
                             },
                             { text: "Experience", style: "sectionHeading" }
@@ -80,8 +79,6 @@ const generatePDFStream = async data => {
                 },
                 layout: "noBorders"
             },
-
-
         ],
 
         styles: {
